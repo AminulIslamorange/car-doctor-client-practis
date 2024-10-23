@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import loginImg from '../../assets/images/login/login.svg';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../Provider/AuthProvider';
 
 const Login = () => {
+    const {loginUser}=useContext(AuthContext)
     const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = e => {
@@ -11,6 +14,11 @@ const Login = () => {
         const email = form.email.value;
         const password = form.password.value;
         console.log(name, email, password);
+        loginUser(email,password)
+        .then(result=>{
+            console.log(result.user);
+        })
+        .catch(error=>console.error(error))
     }
 
     const togglePasswordVisibility = () => {
@@ -65,6 +73,7 @@ const Login = () => {
                             <input className='btn btn-warning' type="submit" value="Login" />
                         </div>
                     </form>
+                    <p className='text-center mb-4'>New To Car doctor? <Link to='/signUp'><span className='text-orange-500 '>Sign Up</span></Link></p>
                 </div>
             </div>
         </div>
