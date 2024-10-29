@@ -1,19 +1,35 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Provider/AuthProvider";
 import BookingsRow from "./BookingsRow";
+import axios from "axios";
 
 
 const Bookings = () => {
     const {user}=useContext(AuthContext);
-    const [bookings,setBooking]=useState([]);
+    const [bookings,setBookings]=useState([]);
     const url=`http://localhost:5000/bookings?email=${user.email}`
-    useEffect(()=>{
-        fetch(url)
-        .then(res=>res.json())
-        .then(data=>{
-            setBooking(data);
+    useEffect(() => {
+      axios.get(url, {withCredentials: true})
+        .then(res => {
+            setBookings(res.data);
         })
-    },[url])
+        // fetch(url)
+        //     .then(res => res.json())
+        //     .then(data => setBookings(data))
+    }, [url]);
+    // useEffect(()=>{
+    //   axios.get(url, {withCredentials:true})
+    //   .then(res=>{
+    //     setBooking(res.data)
+    //   })
+
+
+    //     // fetch(url)
+    //     // .then(res=>res.json())
+    //     // .then(data=>{
+    //     //     setBooking(data);
+    //     // })
+    // },[url])
     const handleDelete=id=>{
         const proceed=confirm('Are you sure want to delete?')
         if(proceed){
@@ -25,7 +41,7 @@ const Bookings = () => {
                if(data.deletedCount > 0){
                 alert('Deleted Successfully');
                 const remaining=bookings.filter(booking=>booking._id !==id);
-                setBooking(remaining)
+                setBookings(remaining)
                }
                
             })
@@ -49,7 +65,7 @@ const Bookings = () => {
           const updated=bookings.find(booking=>booking._id ===id);
           updated.status='confirm'
           const newBooking=[updated,...remaining];
-          setBooking(newBooking)
+          setBookings(newBooking)
         }
       })
 
